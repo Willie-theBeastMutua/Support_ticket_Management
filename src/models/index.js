@@ -9,6 +9,7 @@ const Ticket = require('./ticket.model');
 const TicketInternalNote = require('./ticket_internal_note.model');
 const TicketAssignment = require('./ticket_assignment.model');
 const TicketStatusHistory = require('./ticket_status_history.model');
+const TicketComment = require('./ticket_comments.model');
 
 module.exports = {
     sequelize,
@@ -20,5 +21,6 @@ module.exports = {
     Ticket,
     TicketInternalNote,
     TicketAssignment,
-    TicketStatusHistory
+    TicketStatusHistory,
+    TicketComment
 };

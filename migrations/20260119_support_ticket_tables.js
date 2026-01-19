@@ -89,27 +89,47 @@ exports.up = async function (knex) {
         table.timestamp('changed_at').defaultTo(knex.fn.now());
     });
 
-    // Seed default data for roles, priorities, statuses, categories
-    await knex('roles').insert([{ name: 'ADMIN' }, { name: 'USER' }]);
-    await knex('ticket_statuses').insert([
-        { name: 'OPEN' },
-        { name: 'IN_PROGRESS' },
-        { name: 'RESOLVED' },
-        { name: 'CLOSED' }
-    ]);
-    await knex('ticket_priorities').insert([
-        { name: 'LOW' },
-        { name: 'MEDIUM' },
-        { name: 'HIGH' },
-        { name: 'URGENT' }
-    ]);
-    await knex('ticket_categories').insert([
-        { name: 'ACCOUNT_ACCESS' },
-        { name: 'BILLING' },
-        { name: 'TECHNICAL' },
-        { name: 'FEATURE_REQUEST' },
-        { name: 'OTHER' }
-    ]);
+    // Ticket Comments
+    await knex.schema.createTable('ticket_comments', table => {
+        table.increments('id').primary();
+        table.integer('ticket_id').unsigned().notNullable();
+        table.integer('user_id').unsigned().notNullable();
+        table.text('content').notNullable();
+        table.boolean('is_internal').defaultTo(false);
+        table.timestamp('created_at').defaultTo(knex.fn.now());
+        table.timestamp('updated_at').defaultTo(knex.fn.now());
+
+        table.foreign('ticket_id').references('id').inTable('tickets').onDelete('CASCADE');
+        table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
+    });
+};
+
+exports.down = async function (knex) {
+    await knex.schema.dropTableIfExists('ticket_comments');
+};
+
+
+// Seed default data for roles, priorities, statuses, categories
+await knex('roles').insert([{ name: 'ADMIN' }, { name: 'USER' }]);
+await knex('ticket_statuses').insert([
+    { name: 'OPEN' },
+    { name: 'IN_PROGRESS' },
+    { name: 'RESOLVED' },
+    { name: 'CLOSED' }
+]);
+await knex('ticket_priorities').insert([
+    { name: 'LOW' },
+    { name: 'MEDIUM' },
+    { name: 'HIGH' },
+    { name: 'URGENT' }
+]);
+await knex('ticket_categories').insert([
+    { name: 'ACCOUNT_ACCESS' },
+    { name: 'BILLING' },
+    { name: 'TECHNICAL' },
+    { name: 'FEATURE_REQUEST' },
+    { name: 'OTHER' }
+]);
 };
 
 exports.down = async function (knex) {
