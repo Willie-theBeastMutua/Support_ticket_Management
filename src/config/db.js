@@ -1,13 +1,10 @@
-// src/config/db.js
-const knex = require('knex');
+const { Sequelize } = require('sequelize');
 const env = require('./env');
 
-module.exports = knex({
-    client: 'mysql2',
-    connection: {
-        host: env.DB_HOST,
-        user: env.DB_USER,
-        password: env.DB_PASSWORD,
-        database: env.DB_NAME
-    }
+const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
+    host: env.DB_HOST,
+    dialect: env.DB_DIALECT,
+    logging: false,
 });
+
+module.exports = sequelize;
